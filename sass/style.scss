@@ -1,0 +1,429 @@
+// ini adalah contoh kode dari palajaran kelima
+
+@use 'components/variables';
+@use 'components/library' with (
+    $color: black
+);
+
+// ini adalah contoh kode dari palajaran kelima
+
+
+/*
+    Pelajaran Pertama: Pendeklarasian Variabel 
+    Sass mempunyai fitur variabel yang membuat kita dapat menyimpan value sama seperti b.pemrog seperti c++, python, java dan lainya. 
+    Cara mendeklarasikanya juga mudah, yaitu dengan menggunakan tanda $ lalu diikuti dengan nama variabel.
+*/
+$background-color: #666;
+$color: red;
+
+body {
+    background-color: $background-color;
+    
+    h1 {
+       color: $color; 
+    }
+}
+
+
+/*
+    Pelajaran Kedua: Scope Variabel
+    Di sini kita akan belajar tentang ruang lingkup/scope dari variabel tsb.
+    
+    Ada dua tipe scope variabel yaitu global scope dan local scope.
+    - Global: dapat diakses dimanapun 
+    - Local: hanya dapat diakses di dalam curly brackets tempat dia dideklarasikan.   
+*/
+$global-scope: red;
+.card {
+    $local-scope: blue;
+}
+
+
+/*
+    Pelajaran Ketiga: Jenis Jenis value pada variabel
+    
+    Berikut adalah beberapa jenis value yang dapat digunakan ketika kita mendeklarasikan variabel:
+    
+    - angka/number
+        => 14px | 14em | 100vh | dll
+    - string
+        => 'Arial'
+    - color
+        => red | blue | pink | green
+    - map bisa juga disebut array asosiatif jika pada php atau object pada javascript
+        => $map = (
+            'danger': red,
+            'primary': blue,
+            'warning': yellow
+        )
+    - list, kita dapat memisahkan setiap value menggunakan spasi atau koma atau bisa juga dengan slash
+        => 10px 20px 30px 40px | 10px, 20px, 30px, 40px | 10px/20px/30px/40px
+*/
+
+
+/*
+    Pelajaran Keempat: Nesting
+    
+    Nesting adalah sebuah ekspresi memberi style pada child element di dalam curly brackets parent element. (Ya begitulah wkwk)
+    Daripada bingung, mending cek contohnya aja dibawah
+    
+    Ketika menggunakan nesting, kita dapat menggunakan symbol & yang melambangkan parent selector nya.
+*/
+.card {
+    width: 100px;
+    height: 400px;
+    
+    &-header { // sama seperti kita menuliskan .card .card-header
+        background-color: #666;
+        height: 100px;
+        width: 100%;
+    }
+    &-body { // sama seperti kita menuliskan .card .card-body
+        border-radius: 5px;
+    }
+}
+
+
+/*
+    Pelajaran Kelima: Membuat partials pada Sass dan use 
+    
+    Partial pada Sass digunakan untuk menuliskan kode kode style yang nanti akan di import di bagian utama file Sass. Ini digunakan agar hierarki project Sass kita lebih modular.
+    Cara membuat file partials adalah dengan didahului _ lalu diikuti dengan nama file, contoh _button.scss atau _library.scss
+    
+    Dengan menambahkan _ pada awal file, kita memberitahu compiler sass bahwa file tsb adalah partials sehingga tidak perlu di compile.
+    
+    Lalu use, keyword use digunakan untuk meng-import kode style dari file lain. Dengan itu, kita dapat menggunakan selector - selector yang dideklarasikan pada file yang kita import.
+    Cara menggunakan keyword use adalah: 
+    
+    @use 'nama-file';
+    
+    Disini kita juga dapat meng-override variabel yang dideklarasikan di file yang kita import. Cara menggunakannya adalah sebagai berikut: 
+    @use 'nama-file' with (
+        $nama-var: value-baru
+    )
+    
+    Perlu diingat, jika kita ingin meng-override variabel di dalam keyword with, maka variabel asal harus memakai keyword !default yang artinya variabel tsb dapat di override.
+    
+    NB: Ketika kita meng-import file partials Sass, kita hanya perlu menuliskan nama file nya saja tanpa tanda _ . 
+*/
+
+
+/*
+    Pelajaran Keenam: Modules
+    
+    Ketika kita meng-import kode style dari file lain menggunakan keyword use, dan terdapat variabel pada file yang kita import, kita tidak bisa langsung mengaksesnya dengan hanya memanggil namanya. 
+    
+    Namun, kita dapat mengaksesnya dengan menggunakan keyword:
+    nama-file.nama-var.
+    
+    Fitur ini sangat memudahkan kita untuk me-maintain kode Sass kita.
+*/
+@debug variables.$primary-color;
+
+
+/*
+    Pelajaran ketujuh: Mixin
+    
+    Di bahasa pemrograman lain, kita mengenal istilah function yang gunanya untuk menyimpan sekumpulan blok kode yang akan dijalankan ketika function tsb dipanggil. Sifat Mixin juga seperti itu, namun Mixin menyimpan sekumpulan style style yang nanti akan diterapkan terhadap selector yang memanggil nya.
+    
+    Pertama tama kita ketahui dulu cara mendeklarasikan mixin:
+    @mixin nama-mixin(parameter...) {
+        sekumpulan style
+    }
+    
+    Lalu kita ketahui cara memanggil mixin yang sudah kita deklarasikan:
+    @include nama-mixin(letakan parameter disini jika dibutuhkan);
+    
+    Mixin mempunyai sifat yang hampir sama dengan function pada umumnya yaitu dapat dipanggil dan memiliki fitur nilai default pada parameter.
+*/
+@mixin kotak($bg: #666) {
+    width: 400px;
+    height: 400px;
+    background-color: $bg;
+    border-radius: 3px;
+}
+
+.card {
+    // ini artinya selector class akan mempunyai kode style yang dideklarasikan pada mixin bernama kotak dan mengirimkan style color bernilai blue dan ditangkap oleh mixin kotak sebagai variabel $bg.
+    @include kotak(blue);
+}
+
+
+/*
+    Pelajaran Kedelapan: Extend / Inheritance pada Sass
+    
+    Inheritance adalah proses penurunan dari parent ke child. Di Sass, kita dapat menurunkan property dari 1 selector ke selector yang lain.
+    
+    Selector yang dijadikan parent, bisa diawali dengan tanda % lalu diikuti dengan nama selector tsb atau sebuah selector biasa juga boleh 
+    %parent-selector {
+        masukan style
+    }
+    
+    Cara extend parent class yang sudah didefinisikan juga sangat mudah sekali, yaitu dengan menggunakan keyword @extend lalu diikuti dengan nama parent selector 
+    .child-selector {
+        @extend %parent-selector;
+        masukan style
+    }
+    
+    Perbedaan mixin dan extend:
+    - mixin: style yang dihasilkan mixin adalah berulang, contohnya:
+    .btn-success {
+        padding: 20px 25px;
+        transition: all .5s;
+        color: white;
+        background-color: green;
+    }
+    .btn-yellow {
+        padding: 20px 25px;
+        transition: all .5s;
+        color: white;
+        background-color: warning;
+    }
+    - extend: sedangkan style yang dihasilkan oleh extend / inheritance adalah:
+    .btn-success, .btn-yellow {
+        padding: 20px 25px;
+        transition: all .5s;
+        color: white;
+    }
+    .btn-succes {
+        background-color: green;
+    }
+    .btn-warning {
+        background-color: yellow;
+    }
+*/
+
+%btn {
+    padding: 10px 15px;
+    transition: all .5s;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+        box-shadow: 2px 6px rgba($color: #000000, $alpha: .2);
+    }
+}
+
+.btn-success {
+    @extend %btn;
+    background-color: #00cc00;
+}
+
+.btn-warning {
+    @extend %btn;
+    background-color: yellow;
+    color: black;
+}
+
+
+/*
+    Pelajaran Kesembilan: Property Nesting
+    
+    Nesting tidak hanya dapat digunakan pada selector CSS saja, namun property juga dapat menggunakan fitur nesting inii.. 
+    Lah bagaimana cara kerja nya itu mas?
+    
+    Jadi gini, kan ada property di CSS yang prefix (awalanya) itu sama, seperti: 
+    border-width, border-color, border-style, border-radius..
+    atau
+    font-family, font-size, font-weight
+    
+    Nah kita bisa menulis property tsb di Sass dengan cara:
+*/
+.nesting-prop {
+    font: {
+        family: 'Times New Roman';
+        size: 20px;
+        weight: bold;
+    }
+    border: {
+        style: solid;
+        color: black;
+        width: 5px;
+    }
+}
+
+
+/*
+    Pelajaran Kesepuluh: Interpolation
+    
+    Ketika kita ingin memberi nilai custom property dengan nilai variabel yang kita buat di Sass secara literal/langsung, maka compiler Sass tidak akan bisa memprosesnya. 
+    Maksudnya kak? ok, ok sini aku jelasin
+
+    Kode SASS:
+    $primary: blue;
+    --primary: $primary;
+    
+    Kode CSS:
+    --primary: $primary;
+    
+    Nah tau kan errornya dimana, 
+    iyaa, nilai variabel nya engga dicompile alias masih original..
+
+    bagaimana cara mengatasi masalah ini kak?
+    Yaitu dengan menggunakan interpolation. 
+    Pola interpolation pada Sass adalah dengan mengapit nilai variabel ke dalam ekspresi:
+    #{variabel}
+*/
+$primary: blue;
+:root {
+    --primary: #{$primary};
+}
+
+
+/*
+    Pelajaran Kesebelas: Conditional Property
+    
+    Kita dapat menggunakan keyword if sederhana di Sass, fungsi nya adalah merender value jika syarat yang kita sebutkan terpenuhi/bernilai true.
+*/
+$syarat: true;
+.btn {
+    // ketika variabel syarat bernilai true, maka render value green, namun jika nilainya false, maka tidak usah render property color ke selector .btn .
+    color: if($syarat, green, null);
+}
+
+
+/*
+    Pelajaran Keduabelas: Parent Selector
+    
+    Ketika kita menggunakan Sass, kita dapat menggunakan selector khusus yang bernama parent selector, yang dilambangkan dengan tanda & .
+    
+    Tapi apakah kamu tahu & itu merujuk ke mana?
+    
+    .card {
+        &:hover {} | tanda & akan merujuk ke selector .card
+        
+        .card-body {
+            &:hover {} | tanda & akan merujuk ke selector .card-body
+        }
+    }
+    
+    Apa yang bisa kita ambil dari contoh diatas? 
+    => selector & akan mengarah pada parent elementnya secara langsung, jika dia di deklarasikan di dalam curly brackets nya selector .card, ya dia merujuk ke selector .card dan seterusnya
+*/
+
+
+/*
+    Pelajaran Ketigabelas: Tipe Data Map pada Sass
+    
+    Tipe data Map sama seperti array asosiatif pada PHP atau object pada Javascript. Yaitu sebuah tipe data yang dapat menampung banyak nilai yang nilai tersebut bentuknya adalah key-value.
+    
+    Di Sass, terdapat keyword @each yang fungsinya sama seperti forEach pada b.pemrog Javascript. yaitu melooping elemen array. 
+    Gas kita cobaa
+*/
+$colors: (
+    'warning': yellow,
+    'danger': red,
+    'primary': blue
+);
+
+@each $key, $value in $colors {
+    .btn-#{$key} {
+        background-color: $value;
+    }  
+};
+// Jika diterjemahkan ke CSS, maka akan jadi seperti:
+.btn-warning {
+    background-color: yellow;
+}
+  
+.btn-danger {
+    background-color: red;
+}
+  
+.btn-primary {
+    background-color: blue;
+}
+
+
+/*
+    Pelajaran Keempatbelas: Function pada Sass
+    
+    Berbeda dengan mixin yang hanya bisa berisi style CSS saja, function pada Sass terdapat fitur mengembalikan nilai, sehingga terlihat seperti function yang ada di b.pemrograman lain.
+    
+    Function pada Sass dibedakan menjadi dua yaitu: 
+    - function built-in, yaitu adalah fungsi yang sudah di deklarasikan ke dalam sistem Sassnya sehingga kita tinggal memanggilnya saja / meng-import nya dari file Sass tertentu.
+    contohnya adalah: rgba(), lighten(), darken() dan dsb
+    - function sendiri, yaitu kita sebagai developer yang membuat function Sass secara mandiri.
+*/
+@function kali($angka, $berapa) {
+    @return $angka * $berapa;
+}
+@debug kali(2,100);
+
+
+/*
+    Pelajaran Kelimabelas: Flow Control pada Sass
+    
+    Seperti yang kita ketahui, CSS adalah bahasa markup sehingga kita tidak dapat mengatur bagaimana program tsb berjalan. Namun di SASS, terdapat fitur flow control yang diantaranya adalah sebagai berikut:
+    
+    @if, @else, @else if
+    @for
+    @while
+    @each
+    
+    Cara penulisan:
+    @if => 
+        @if $nama-var-yang-berisi-nilai-boolean {
+            beri style
+        }
+        
+    @if @else =>
+        @if $nama-var-yang-berisi-nilai-boolean {
+            beri style
+        } @else {
+            beri style
+        }
+        
+    @else if =>
+        @if $nama-var-yang-berisi-nilai-boolean / perbandingan {
+            beri style
+        } @else if $nama-var-yang-berisi-nilai-boolean / perbandingan  {
+            beri style
+        } @else {
+            beri style
+        }
+        
+    @for => 
+        @for $nama-var from nilai-mulai(angka) to nilai-akhir+1(angka) {
+            
+        }
+        
+    @while => fungsinya sama seperti @for, namun dengan syntax yang dipecah pecah
+        @variabel-penampung-nilai: nilai-mulai(angka)
+        @while @variabel-penampung-nilai < / > nilai-akhir {
+            beri style
+            
+            assign kembali variabel-penampung-nilai
+            $variabel-penampung-nilai: increment/decrement;
+        }
+        
+    @each => digunakan untuk melooping tipe data map
+        @each $item in @items {
+            beri style
+        }
+        atau kita juga bisa menuliskan:
+        @each $key, $value in @items {
+            beri style
+        }
+*/
+
+
+/*
+    Pelajaran Keenambelas: Built-In Modules pada Sass
+    
+    Sass menyediakan fungsi (disebut modules jika pada Sass) yang dapat kita gunakan. Built-In modules dikelompokan menjadi beberapa kategori yaitu:
+    - color => adjust, mix, alpha, blackness, change, complement, dll
+    - list => append, index, is-bracketed, join, length, separator, dll
+    - map => cari sendiri aja ya
+    - math => cari sendiri aja ya
+    - meta => cari sendiri aja ya
+    - selector => cari sendiri aja ya
+    - string => cari sendiri aja ya
+    
+    Ketika kita ingin menggunakan built-in modules, kita dapat memanggil terlebih dahulu kategorinya. Cara memanggil nya sama seperti kita memanggil modules/another file yaitu dengan menggunakan keyword @use, tapi jangan lupa tambahkan keyword sass: didepan kategori untuk memberi tahu Compiler Sass bahwa yang kita panggil adalah built-in modules nya.
+    
+    Untuk dokumentasi selengkapnya bisa dicek di: 
+    https://sass-lang.com/documentation/modules/color
+*/
